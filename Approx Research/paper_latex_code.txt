@@ -1,0 +1,338 @@
+%\documentclass[conference]{IEEEtran}
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+%\makeatletter
+%\def\ps@IEEEtitlepagestyle{%
+%  \def\@oddfoot{\mycopyrightnotice}%
+%  \def\@evenfoot{}%
+%}
+%\def\mycopyrightnotice{%
+%  {\footnotesize 979-8-3503-4215-4/23/\$31.00~\copyright~2023 IEEE\hfill}% <--- Change here
+%  \gdef\mycopyrightnotice{}
+%}
+
+
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{flushend}
+\usepackage[outdir=./]{epstopdf}
+
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\IEEEoverridecommandlockouts \IEEEpubid{\makebox[\columnwidth]{979-8-3315-3153-9/24/\$31.00~\copyright~2024~IEEE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
+
+\begin{document}
+
+\title{A Hybrid Approximate Adder for Approximate Computing in Image Processing }
+
+% \author{
+% %\IEEEauthorblockN{Kesava Jaya Ram Ch.,}
+% %\IEEEauthorblockA{\textit{Department of ECE,}\\
+% %\textit{IIITDM Kurnool, India - 518007.} \\
+% %Email: 119ec0027@iiitk.ac.in}
+% %\and
+% \IEEEauthorblockN{Mohamed Asan Basiri M,}
+% \IEEEauthorblockA{\textit{Department of ECE,} \\
+% \textit{IIITDM Kurnool, India - 518008.}\\
+% Email: asan@iiitk.ac.in}
+% }
+
+%\author{
+%\IEEEauthorblockN{Kesava Jaya Ram Ch$^1$ and Mohamed Asan Basiri M$^2$}\\
+%\IEEEauthorblockA{\textit{Department of ECE,}
+%\textit{IIITDM Kurnool - 518002, India.} \\
+%Email: 119ec0027@iiitk.ac.in$^1$ and asan@iiitk.ac.in$^2$}}
+
+%\author{Kesava Jaya Ram Ch and Mohamed Asan Basiri M}
+
+\maketitle
+
+\begin{abstract}
+In the domain of error-tolerant applications, such as image processing, approximate computing has emerged as a promising paradigm for optimizing power and performance. Although the conventional ripple-carry adder (RCA) is widely used, it suffers from significant critical path delay due to full-carry propagation. This paper proposes a novel approximate adder architecture designed to reduce hardware complexity while maintaining operational viability. The proposed design introduces a segmented approach in which carry propagation is eliminated for the lower nibble of input bits, replacing standard logic with a simplified approximation technique. This modification significantly reduces critical path delay and minimizes hardware resource utilization compared to traditional exact adders and existing approximated adder logic. The simulation results demonstrate that the proposed adder achieves an accuracy of 64.06\%, offering a balanced trade-off between hardware efficiency and computational precision for resource-constrained image processing applications.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Ripple Carry Adder, Box Kernel, Laplacian kernel, Sobel Kernel, Mean Error Distance (MED), Normalized Mean Error Distance (NMED) 
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+\noindent High-speed Digital Signal Processing (DSP) applications, particularly in portable devices, demand architectures that minimize power consumption, silicon area, and delay. While traditional designs prioritize exact numerical accuracy, this often incurs significant hardware costs. Approximate computing leverages the error tolerance of applications like image processing to trade minor precision losses for substantial hardware gains.
+
+In image processing, operations such as smoothing and edge detection rely on applying $3\times3$ kernels (e.g., Box, Gaussian). This requires the accumulation of partial products to compute pixel averages. Using conventional Ripple Carry Adders (RCA) for these additions is inefficient due to long critical path delays caused by full carry propagation and high power consumption. Conversely, existing approximate adders often sacrifice too much accuracy to achieve hardware reductions, degrading the output image quality significantly.
+
+To address these limitations, this paper proposes a novel Hybrid Approximate Adder. The architecture utilizes a segmented design: the Upper Nibble (MSB) employs exact logic to preserve significant magnitude data, while the Lower Nibble (LSB) uses a simplified approximate logic to eliminate carry propagation. This approach effectively reduces the critical path delay and hardware footprint while maintaining higher accuracy than existing approximate designs.
+
+The key contributions of this work are:
+\begin{itemize}
+    \item Proposes a Hybrid Approximate Adder that balances accuracy with hardware efficiency.
+    \item Implements the adder in $3\times3$ kernel convolutions for image processing.
+    \item Presents a comparative analysis demonstrating reduced delay and area compared to exact RCAs, with superior accuracy over existing approximate adders.
+\end{itemize}
+
+
+
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.15]{PAL.eps}
+\caption{Basic architecture of Proposed Adder Logic (PAL)}
+\label{wiener_basic}
+\end{center}
+\end{figure}
+
+
+
+
+% \begin{figure*}[htb]
+% \begin{center}
+% \includegraphics[scale=0.4]{dia_files/proposed.eps}
+% \caption{The proposed dual core FPGA implementation of Wiener filter with partial reconfiguration in Zynq 7000 SoC}
+% \label{proposed}
+% \end{center}
+% \end{figure*}
+
+
+% \begin{figure}[htb]
+% \begin{center}
+% \includegraphics[scale=0.3]{dia_files/operation.eps}
+% \caption{The flow diagram to find the value of $c$ in the proposed implementation }
+% \label{operation}
+% \end{center}
+% \end{figure}
+
+% \begin{figure*}[htb]
+% \begin{center}
+% \includegraphics[scale=0.4]{dia_files/flow_diagram.eps}
+% \caption{The flow diagram to find the value of output of Wiener filter ${\bf{y=H.x}}$ in the proposed implementation }
+% \label{flow_diagram}
+% \end{center}
+% \end{figure*}
+
+\section{Performance Metrics}
+\noindent To evaluate the efficiency and precision of the Proposed Adder Logic (PAL) against various Existing Adder Logics (EAL), we utilize a set of standard error metrics. These parameters quantify the deviation of the approximate result from the exact result and measure the overall reliability of the design.
+
+\subsection{Error Distance (ED)}
+The Error Distance (ED), also referred to as the Error Order, is defined as the absolute difference between the decimal value of the exact sum and the decimal value of the approximate sum. It is mathematically expressed as:
+\begin{equation}
+    ED = |S_{exact} - S_{approx}|
+\end{equation}
+where $S_{exact}$ and $S_{approx}$ denote the decimal outputs of the exact adder and the approximate adder, respectively.
+
+\subsection{Mean Error Distance (MED)}
+The Mean Error Distance (MED) represents the average error magnitude across all possible input combinations. In the context of image processing with $3\times3$ kernels, the accumulation of 9 partial products can result in a sum exceeding standard 8-bit pixel depth, requiring a maximum of 12 bits. Consequently, the comparison is modeled as a 12-bit addition. To capture the complete error profile, we exhaustively simulate the adder for all possible combinations of two 12-bit inputs, resulting in a total of $2^{12} \times 2^{12} = 2^{24}$ cases. The MED is calculated as:
+\begin{equation}
+    MED = \frac{1}{2^{24}} \sum_{i=1}^{2^{24}} ED_i
+\end{equation}
+
+\subsection{Normalized Mean Error Distance (NMED)}
+To facilitate comparison across different adder sizes, the Normalized Mean Error Distance (NMED) is utilized. It is obtained by normalizing the MED with respect to the maximum possible output of the exact adder ($S_{max}$). For a 12-bit adder, $S_{max}$ is $(2^{13} - 2)$.
+\begin{equation}
+    NMED = \frac{MED}{S_{max}}
+\end{equation}
+
+\subsection{Error Rate (ER) and Accuracy}
+The Error Rate (ER) is the ratio of input cases where the approximate sum differs from the exact sum to the total number of cases. 
+\begin{equation}
+    ER = \frac{\text{Total cases where } S_{exact} \neq S_{approx}}{2^{24}}
+\end{equation}
+Consequently, the Accuracy of the design is derived from the Error Rate and expressed as a percentage:
+\begin{equation}
+    Accuracy (\%) = (1 - ER) \times 100
+\end{equation}
+\begin{eqnarray}
+E(e^{2}[n])=E(({\bf{s}}-{\bf{H.x}})^{2})\\
+E(e^{2}[n])=E({\bf{s^2}})-2.{\bf{H^{T}}}.E({\bf{s.x}})+{\bf{H.H^{T}}}.E({\bf{x.x^{T}}})\\
+E(e^{2}[n])={\bf{Rss}}-2.{\bf{H^{T}}}.{\bf{Rsx}}+{\bf{H.H^{T}}}.{\bf{Rxx}}
+\end{eqnarray}
+
+The 4-point input, ($4\times 4$) co-efficient matrix, the 4-point transposed input signal, ($4\times 4$) autocorrelation matrix, and ($4\times 4$) cross correlation matrix are shown in (4), (5), (6), and (7) respectively. \begin{eqnarray}
+{\bf{H}}=\begin{bmatrix}h[0]&h[-1]&h[-2]&h[-3]\\ h[1]&h[0]&h[-1]&h[-2]\\ h[2]&h[1]&h[0]&h[-1]\\ h[3]&h[2]&h[1]&h[0]\end{bmatrix} \\
+{\bf{x^{T}}}=\begin{bmatrix} x[0]&x[1]&x[2]&x[3]\end{bmatrix}\\
+{\bf{Rxx}}=\begin{bmatrix}Rxx[0]&Rxx[-1]&Rxx[-2]&Rxx[-3]\\ Rxx[1]&Rxx[0]&Rxx[-1]&Rxx[-2]\\ Rxx[2]&Rxx[1]&Rxx[0]&Rxx[-1]\\ Rxx[3]&Rxx[2]&Rxx[1]&Rxx[0] \end{bmatrix}\\
+{\bf{Rsx}}=\begin{bmatrix}Rsx[0]&Rsx[-1]&Rsx[-2]&Rsx[-3]\\ Rsx[1]&Rsx[0]&Rsx[-1]&Rsx[-2]\\ Rsx[2]&Rsx[1]&Rsx[0]&Rsx[-1]\\ Rsx[3]&Rsx[2]&Rsx[1]&Rsx[0] \end{bmatrix}
+\end{eqnarray}
+
+If $\frac{\partial E(e^{2}[n])}{\partial {\bf{H}}}=0$, then ${\bf{H=Rxx^{-1}.Rsx}}$. It is known as the Wiener-Hopf equation. To find the inverse of the matrix ${\bf{Rxx}}$, the Givens rotation \cite{givens} and Gram-Schmidt based QR decomposition \cite{gsqr} are most widely used. In a few literature, co-ordinate rotation digital computer (CORDIC) \cite{cordic} algorithm based Givens rotation is used to find the values of  ${\bf{Rxx^{-1}}}$. 
+
+In the past two decades, a lot of VLSI architectures \cite{filter2}\cite{filter3} on the digital filters are proposed. A few hardware implementations of Wiener filter are found in the literature. In \cite{wiener1}, CORDIC algorithm based Givens rotation is used to find the upper triangular matrix during the calculation of the inverse of auto correlation matrix in the implementation of Wiener filter in Xilinx Spartan 6 FPGA. In \cite{wiener2}, Gram-Schmidt QR Decomposition is used to find the upper triangular matrix during the calculation of the inverse of auto correlation matrix in the implementation of Wiener filter in Xilinx Virtex 5 FPGA. In \cite{wiener3}, Givens rotation without CORDIC algorithm is used to find the upper triangular matrix during the calculation of the inverse of auto correlation matrix in the implementation of Wiener filter in Xilinx Virtex 4 FPGA. In \cite{wiener4}, a number of restoring dividers are used to implement the Wiener filter in Xilinx Zynq 7 FPGA, where the calculation of upper triangular matrix is not done. In all the above mentioned works, the resource utilization and delay are very high. This gives the motivation to our proposed design, where the partial reconfiguration \cite{pr} and pipelined dual core implementation \cite{dual_core} are used to reduce the resource utilization and delay respectively. 
+
+The rest of the paper is organized as follows. Section II elaborates the proposed FPGA implementation of the Wiener filter. The design modelling, implementation, and results are shown in Section III followed by a conclusion in Section IV. 
+
+\section{The Proposed FPGA Implementation of Wiener Filter}
+
+\noindent Fig.~\ref{proposed} shows the proposed dual core FPGA implementation of the Wiener filter with partial reconfiguration in Zynq 7000 SoC. Here, the processing system (PS) includes two ARM cores such as Cortex A9$\_$0 (C0) and Cortex A9$\_$1 (C1). Each core is connected with the corresponding co-processors. Each of these co-processors will take any one of the logic as shown in the reconfiguration files (RFs) such as RF-1 and RF-2. Here, RF-1 of C0 can perform square root and division operations in parallel. Similarly, RF-2 of C0 performs two multiplications and one addition in parallel. Also, RF-1 of C1 can perform one division operation. Similarly, RF-2 of C1 performs one multiplication and one addition in parallel. These RFs are placed in the SD card of FPGA evaluation board. The corresponding RF is loaded into the dynamic region (co-processor) of the FPGA fabric whenever the concerned operations are required. The inputs to the co-processors are sent from the C0 and C1 via AXI-LITE interfaces. The outputs from the co-processors are received by the corresponding cores C0 and C1 via the same interfaces. Also, we have a shared memory (M) between C0 and C1. This shared memory shares required values from C0 to C1 and from C1 to C0. Here, AXI-Timer is used to get the latency of operations in terms of the cycles. The below steps are used in our proposed FPGA implementation to find the Wiener filter output.
+
+\begin{enumerate}
+\item Calculation of ($n\times n$) autocorrelation matrix (${\bf{Rxx}}$) and cross correlation matrix (${\bf{Rsx}}$)
+\item Calculation of upper triangular matrix ($U_{\frac{n(n-1)}{2}}$) and orthogonal matrix ($Z$) from ${\bf{Rxx}}$ using Givens rotation such that ($U_{\frac{n(n-1)}{2}}=Z.{\bf{Rxx}}$).
+\item Calculation of inverse of the upper triangular matrix $U_{\frac{n(n-1)}{2}}$
+\item Calculation of inverse of ${\bf{Rxx}}$ such that ${\bf{Rxx^{-1}}}=U_{\frac{n(n-1)}{2}}^{-1}.Z$
+\item Calculation of the Winer filter co-efficient matrix ${\bf{H=Rxx^{-1}.Rsx}}$
+\item Calculation of the Wiener filter output ${\bf{y=H.x}}$
+\end{enumerate}
+
+To find the filter output ${\bf{y}}$ as per the proposed implementation as shown in Fig.~\ref{wiener_basic}, we need to get the values of ${\bf{Rxx}}$ and ${\bf{Rsx}}$. Here, the auto correlation matrix of ${\bf{x}}$ is found by sending the corresponding values of ${\bf{x}}$ from C0 to RF2 repeatedly to do the required multiplications and additions. Similarly, the cross correlation matrix ${\bf{Rsx}}$ is found by sending the corresponding values of ${\bf{s}}$ and ${\bf{x}}$ from C1 to RF2 repeatedly to do the required multiplications and additions. 
+
+According to the Wiener-Hopf equation, the main objective is to find ${\bf{Rxx^{-1}}}$. Let the matrix ${\bf{Rxx}}$ is of $(n\times n)$. Here, the Givens rotation is used to decompose the matrix ${\bf{Rxx}}$ into the multiplication of upper triangular matrix ($U_{\frac{n(n-1)}{2}}$) and an orthogonal matrix ($Z$). In other words, ${\bf{Rxx}}=Z^{T}.U_{\frac{n(n-1)}{2}}$. Therefore, ${\bf{Rxx^{-1}}}=U_{\frac{n(n-1)}{2}}^{-1}.Z$. The inverse of orthogonal matrix is the transpose of the same ($Z^{-1}=Z^{T}$). Since $U_{\frac{n(n-1)}{2}}$ is an upper triangular matrix, $U_{\frac{n(n-1)}{2}}^{-1}$ is also an upper triangular matrix. The inverse of an upper triangular matrix can be easily found by using a few arithmetic operations such as calculation of the adjoint matrix and division with the determinant. If the matrix ${\bf{Rxx}}$ is of $(n\times n)$, then the Givens rotation process needs to find $(n-1)$+$(n-2)+...+3+2+1$=$\frac{n(n-1)}{2}$ number of rotation matrices. Here, each rotation matrix can be found by calculating the value of $U_{k}=G_{k}.U_{k-1}$, where $k$ is varied from 1 to $\frac{n(n-1)}{2}$ and $U_{0}={\bf{Rxx}}$. Here, each matrix multiplication requires $4n$ numbers of real multiplications and $2n$ numbers of real additions. In the rotation matrix $G_{k}$, the elements are defined as follows.\\
+$g_{pp}=c$, where $p=i$\\
+$g_{pq}=s$, where $p=i$ and $q=j$\\
+$g_{qp}=-s$, where $p=i$ and $q=j$\\
+$g_{qq}=c$, where $q=j$\\
+$g_{pp}$=1, where $p\neq i$\\
+$g_{pq}$=0, where $p\neq i$, $q\neq j$, and $p\neq q$\\
+$c=\frac{U_{ii}}{\sqrt{U_{ii}^{2}+U_{ji}^{2}}}$\\
+$s=\frac{U_{ji}}{\sqrt{U_{ii}^{2}+U_{ji}^{2}}}$\\
+
+
+
+
+\begin{table*}[h]
+ \centering
+\small\addtolength{\tabcolsep}{-4pt}
+    \caption{The parallel and pipelined operations of Wiener filter using the proposed FPGA implementation}
+\label{operation2}
+    \begin{center}
+        
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+         \hline
+& 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9  \\ \hline
+Filtering-1&${\bf{Rxx}}$ in C0 & ${\bf{Rsx}}$ in C1 &Givens Rotation  &${\bf{Rxx^{-1}}}$ in C1 & ${\bf{Rxx^{-1}.Rsx}}$ & ${\bf{H.x}}$ in C1& &&\\
+& &&to get upper  & &in C0  & & &&\\ 
+& & &triangular  & & & & &&\\ 
+& && matrix and & & & & &&\\  
+& && orthogonal  & & & & &&\\ 
+& && matrix  in C0& & & & &&\\ \hline
+
+Filtering-2&&${\bf{Rxx}}$ in C0 &${\bf{Rsx}}$ in C1& Givens Rotation  &${\bf{Rxx^{-1}}}$ in C1 & ${\bf{Rxx^{-1}.Rsx}}$  & ${\bf{H.x}}$ in C1&&\\
+& &&&to get upper   & &in C0 & &&\\
+& & & & triangular & & & &&\\ 
+& & & &matrix and & & & &&\\  
+& & & &orthogonal & & & &&\\  
+& & & &matrix in C0& & & &&\\ \hline
+
+Filtering-3&&&&  & &   & ${\bf{Rxx}}$ in C0&${\bf{Rsx}}$ in C1&... \\ \hline
+
+
+Filtering-4&&&&  & &   && ${\bf{Rxx}}$ in C0&...\\ \hline
+
+\end{tabular}
+\end{center}
+\end{table*}
+
+Fig.~\ref{operation} shows the flow diagram to find the value of $c$ in the proposed implementation, where the core C0 is involved. The values $U_{ii}$ and $U_{ji}$ are sent from C0 to the RF-2 to find the values of $U_{ii}^{2}$ and $U_{ji}^{2}$. Then these values are sent from C0 to RF-2 to receive the value of $U_{ii}^{2}+U_{ji}^{2}$. Now, the recently received value is sent from C0 to RF-1 to get the value of $\sqrt{U_{ii}^{2}+U_{ji}^{2}}$. Then the values of $U_{ii}$ and $\sqrt{U_{ii}^{2}+U_{ji}^{2}}$ are sent from C0 to RF-1 to get the value of $c=\frac{U_{ii}}{\sqrt{U_{ii}^{2}+U_{ji}^{2}}}$. In the similar way, the value of $s$ is obtained using the interaction between C0 and the corresponding co-processor with the reconfigurable files RF-1 and RF-2. Since all the rotation matrices $G_{1}$, $G_{2}$,...$G_{\frac{n(n-1)}{2}}$ are orthogonal, the multiplication of these matrices $Z=G_{1}.G_{2}.....G_{\frac{n(n-1)}{2}}$ is also an orthogonal. Here, each orthogonal multiplication requires four real multiplications and two real additions, because these orthogonal matrices $G_{1}$, $G_{2}$,...$G_{\frac{n(n-1)}{2}}$ include at most four non zero and off diagonal elements while all the remaining off diagonal elements are zero. Here, the diagonal elements are 1. All these addition and multiplication operations to get the upper triangular matrix and orthogonal matrix using Givens rotation are done by sending the required values from C0 to the RF-2 of the corresponding co-processor as shown in Fig.~\ref{operation}. 
+
+\begin{table*}[h]
+ \centering
+%\small\addtolength{\tabcolsep}{-2pt}
+    \caption{Synthesis results of various implementations of Wiener filters using Xilinx FPGAs in Xilinx Vivado}
+\label{results}
+    \begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+         \hline
+Designs&Xilinx  &Operating & No. of & No. of & No. of & No. of & No. of &Static & Dynamic & Total &Delay & SNR  \\ 
+&FPGA &Frequency & Slices & Slice & LUTs & Flip-flops & DSPs & Power & Power & Power &($s$) & ($dB$) \\
+&&($MHz$) & & Registers & && &($W$) &($W$) &($W$) && \\ \hline
+
+\cite{wiener1} & Spartan 6 &100&NA&8245&3768&NA&15&NA&NA&NA&NA&50.28 \\ 
+\cite{wiener2} & Virtex 5 &133&NA&19346&22126&NA&36&NA&NA&NA&NA&30.27 \\ 
+ \cite{wiener3} & Virtex 4 &400&792&NA&933&641&NA&NA&NA&0.194&NA&49.03 \\ 
+\cite{wiener4} & Zynq 7 &100&NA&NA&565181&27423&166&NA&NA&NA&NA&NA \\ 
+Proposed $\star$& Zynq 7000 & 100&351&4421&2820&308&0&0.132&1.021&1.153&0.41&62.2 \\
+Proposed $\star \star$& Zynq 7000 & 100&351&4421&2820&308&0&0.132&1.021&1.153&0.53&61.6 \\ \hline
+
+\end{tabular}\\
+ $\star$ The proposed implementation for one Wiener Filtering operation.  $\star\star$ The proposed implementation for two Wiener Filtering operations using pipeline in parallel. NA is not available.
+\end{center}
+\end{table*}
+
+Once the ($n\times n$) upper triangular matrix ($U_{\frac{n(n-1)}{2}}$) is obtained, then ($n\times n$) adjoint matrix is to be found. The calculation of ($n\times n$) adjoint matrix requires $n^{2}$ numbers of determinants of matrices of size ($n-1$, $n-1$). Each determinant requires $(n-2)$ numbers of real multiplications. Hence, we need $n^{2}.(n-2)$ numbers of real multiplications to get the ($n\times n$) adjoint matrix. All these multiplications are found by sending the required values from C1 to the RF-2 of the corresponding co-processor similar to the operations as shown in Fig.~\ref{operation}. Once the adjoint matrix is found, then the determinant of the ($n\times n$) upper triangular matrix ($U_{\frac{n(n-1)}{2}}$) needs to be found. This determinant operation requires ($n-1$) numbers of multiplications. Again these multiplications are found by sending the required values from C1 to the RF-2 of the corresponding co-processor similar to the operations as shown in Fig.~\ref{operation}. To get the inverse of ($n\times n$) upper triangular matrix, the elements of ($n\times n$) adjoint matrix should be divided by the determinant value of the upper triangular matrix. This operation requires $n+(n-1)+(n-2)+...+3+2+1=\frac{n(n+1)}{2}$ numbers of divisions. These divisions are done at RF-1 of C1. Now, the value of $U_{\frac{n(n-1)}{2}}^{-1}$ of size ($n\times n$) is produced. 
+
+Now, the ($n\times n$) matrix multiplication between $U_{\frac{n(n-1)}{2}}^{-1}$ and $Z$ is performed in C1 to get ${\bf{Rxx^{-1}}}$ of size $(n\times n)$, where $n^{2}$ elements are to be found. The each of the $n$ elements of the first row of ${\bf{Rxx^{-1}}}$ requires $n$ and $(n-1)$ numbers of real multiplications and additions respectively. The each of the $n$ elements of the second row of ${\bf{Rxx^{-1}}}$ requires $(n-1)$ and $(n-2)$ numbers of real multiplications and additions respectively. The each of the $n$ elements of the third row of ${\bf{Rxx^{-1}}}$ requires $(n-2)$ and $(n-3)$ numbers of real multiplications and additions respectively. The each of the $n$ elements of the $(n-1)^{th}$ row of ${\bf{Rxx^{-1}}}$ requires $2$ and $1$ numbers of real multiplications and additions respectively. The each of the $n$ elements of the $n^{th}$ row of ${\bf{Rxx^{-1}}}$ requires $1$ and $0$ numbers of real multiplications and additions respectively. Hence, this process requires $n^{2}(\frac{n(n+1)}{2})$ and $n^{2}(\frac{n(n-1)}{2})$ numbers of real multiplications and additions respectively using RF-2 of C1 similar to the operations as shown in Fig.~\ref{operation}. 
+
+Then the ($n\times n$) matrix multiplication between ${\bf{Rxx^{-1}}}$ and ${\bf{Rsx}}$ to get ${\bf{H}}$ is done at C0 using RF-2, where $n^{2}$ elements need to be found. The calculation of each element requires $n$ real multiplications and $(n-1)$ real additions. Hence, this process requires $n^{3}$ and $n^{2}(n-1)$ numbers of real multiplications and additions respectively using RF-2 of C0 similar to the operations as shown in Fig.~\ref{operation}. In the last step, we have to find the multiplication between ($n\times n$) matrix ${\bf{H}}$ and $n$-point vector ${\bf{x}}$ to get the Wiener filter output ${\bf{y}}$, which is done at C1 using using RF-2, where $n$ elements need to be found. The calculation of each element requires $n$ real multiplications and $(n-1)$ real additions. Hence, this process requires $n^{2}$ and $n(n-1)$ numbers of real multiplications and additions respectively using RF-2 of C1 similar to the operations as shown in Fig.~\ref{operation}. All these steps are clearly shown in Fig.~\ref{flow_diagram}. Here, the values are sent from C0 (or C1) to C1 (or C0) via the shared memory whenever required.
+
+Table~\ref{operation2} shows the parallel and pipelined operations of Wiener filter using the proposed FPGA implementation. To perform the first Wiener filter operation (filtering-1), the ($n\times n$) correlation matrix ${\bf{Rxx}}$ is found using the corresponding RF-2 at C0. The the value of ($n\times n$) correlation matrix ${\bf{Rsx}}$ is found using the RF-2 at C1.  At this time, the value of ($n\times n$) correlation matrix ${\bf{Rxx}}$ for the second Wiener filtering is found using the corresponding RF-2 at C0 in parallel. Then the Givens rotation for the first Wiener filtering is performed to find the upper triangular matrix ($U_{\frac{n(n-1)}{2}}$) at C0 while calculation of ($n\times n$) cross correlation matrix ${\bf{Rsx}}$ corresponding to the second Wiener filter operation is being performed at C1. Then the inverse of ${\bf{Rxx}}$ for the first filtering operation is done at C1 while the Givens rotation corresponding to the second Wiener filtering is performed to find the upper triangular matrix ($U_{\frac{n(n-1)}{2}}$) at C0. Then the ($n\times n$) matrix multiplication between ${\bf{Rxx^{-1}}}$ and ${\bf{Rsx}}$ corresponding to the first Wiener filtering is done at C0 while the inverse of ${\bf{Rxx}}$ for the second filtering operation is done at C1. Then the calculation of ($n\times n$) matrix (${\bf{H}}$) and $n$-point vector (${\bf{x}}$) multiplication corresponding to the first Wiener filtering is done at C1 while the ($n\times n$) matrix multiplication between ${\bf{Rxx^{-1}}}$ and ${\bf{Rsx}}$ corresponding to the second Wiener filtering is done at C0. Then the calculation of ($n\times n$) matrix (${\bf{H}}$) and $n$-point vector (${\bf{x}}$) multiplication corresponding to the first Wiener filtersing is done at C1 while the calculation of the ($n\times n$) correlation matrix ${\bf{Rxx}}$ for third filtering is found using the RF-2 at C0 in parallel. In the similar way, the Wiener filtering operations 3 and 4 can be performed in parallel. Due to two filter operations are performed parallel, the overall latency of our proposed implementation would be very less. The total latency to complete two Wiener filter operations using the proposed dual core implementation with pipeline as shown in Table~\ref{operation2} is $T_{{\bf{R_{xx}}}}+max(T_{{\bf{R_{sx}}}},T_{{\bf{R_{xx}}}})+max(T_{Givens},T_{{\bf{R_{sx}}}})+max(T_{Givens},T_{{\bf{R_{xx}^{-1}}}})+max(T_{{\bf{R_{xx}^{-1}.R_{sx}}}},T_{{\bf{R_{xx}^{-1}}}})+max(T_{{\bf{R_{xx}^{-1}.R_{sx}}}},T_{{\bf{H.x}}})+T_{{\bf{H.x}}}$, where $T_{{\bf{R_{xx}}}}$, $T_{{\bf{R_{sx}}}}$, $T_{{\bf{R_{xx}^{-1}}}}$, $T_{{\bf{H.x}}}$, and $T_{Givens}$ are the latency required to find ${\bf{R_{xx}}}$, ${\bf{R_{sx}}}$, ${\bf{R_{xx}^{-1}}}$, ${\bf{H.x}}$, and upper triangular matrix along with the orthogonal matrix from ${\bf{R_{xx}}}$ using Givens rotation respectively. Since $T_{{\bf{R_{xx}}}}$=max$(T_{{\bf{R_{xx}}}},T_{{\bf{H.x}}})$, the total latency to complete $N$ Wiener filter operations using the proposed dual core implementation with pipeline as shown in Table~\ref{operation2} is $(T_{{\bf{R_{xx}}}}+max(T_{{\bf{R_{sx}}}},T_{{\bf{R_{xx}}}})+max(T_{Givens},T_{{\bf{R_{sx}}}})+max(T_{Givens},T_{{\bf{R_{xx}^{-1}}}})+max(T_{{\bf{R_{xx}^{-1}.R_{sx}}}},T_{{\bf{R_{xx}^{-1}}}})+max(T_{{\bf{R_{xx}^{-1}.R_{sx}}}},T_{{\bf{H.x}}}))+\frac{N-2}{2}(T_{{\bf{R_{xx}}}}+max(T_{{\bf{R_{sx}}}},T_{{\bf{R_{xx}}}})+max(T_{Givens},T_{{\bf{R_{sx}}}})+max(T_{Givens},T_{{\bf{R_{xx}^{-1}}}})+max(T_{{\bf{R_{xx}^{-1}.R_{sx}}}},T_{{\bf{R_{xx}^{-1}}}})+max(T_{{\bf{R_{xx}^{-1}.R_{sx}}}},T_{{\bf{H.x}}}))$, where $N$ is an even number.
+
+\section{Design Modelling, Implementation, and Results}
+\noindent The implementation of the proposed design is done with Xilinx Zynq 7000 FPGA (XC7Z020CLG484-1) using Xilinx Vivado EDA tool. All the inputs and outputs are considered to be of 16 bits using IEEE-754 half precision format. We use the floating point adder, Wallace tree based floating point multiplier \cite{mac}, and floating point digit recurrence divider \cite{digit_serial} for the implementation of our proposed design. For the implementation, we use 16-point voice signal and each sample is represented in 16-bit IEEE-754 half precision format. Therefore, the matrices such as ${\bf{Rxx}}$, ${\bf{Rsx}}$, ${\bf{Rxx^{-1}}}$, and ${\bf{H}}$ are of ($16\times 16$) in size during the implementation. Table~\ref{results} shows the synthesis results of various implementations of Wiener filters using Xilinx FPGAs in Xilinx Vivado. Here, the signal to noise ratio is calculated using $10log_{10}(\frac{P_{s}}{P_{noise}})$ in dB, where the signal power $P_{s}$ is calculated by averaging the sum of squares of all the sample values of the input signal. In other words, $P_{s}=\frac{1}{n}(s^2[0]+s^2[1]+...s^2[n-1]$), where $n$ is the total number of samples of the input signal ${\bf{s}}$. The noise power $P_{noise}$ is calculated by averaging the sum of squares of all the differences between the input and output signal sample values of the Wiener filter.  In other words, $P_{noise}=\frac{1}{n}((s[0]-y[0])^2+(s[1]-y[1])^2+...(s[n-1]-y[n-1])^2$). The delay of the proposed implementation is calculated by multiplying the number of cycles used to complete the filtering operation by $100\mu s$, where the clock cycle period in the Zynq 7000 implemention is $100\mu s$. Here, the number of cycles used to complete the filtering operation is taken from the AXI timer used in the implementation. 
+
+Due to the implementation of the partial reconfiguration, the number of resources used in the proposed implementation is very less. Due to the parallel and pipelined implementation using dual cores, the latency to complete the two filtering operations in the proposed design is not much more greater than the delay to complete the one filtering operation. 
+
+
+
+\section{Conclusion}
+\noindent In order to preserve operational viability while reducing hardware complexity, a unique approximate adder architecture is proposed in this research. The suggested architecture replaces standard logic with a more straightforward approximation method in a segmented manner that eliminates carry propagation for the bottom nibble of input bits. Compared to conventional exact adders and current approximation adder circuitry, this improvement dramatically lowers the critical route delay and minimizes hardware resource use. According to simulation results, the suggested adder achieves an accuracy of 64.06\%, providing a fair trade-off between computational precision and hardware efficiency for image processing applications with limited resources.
+
+
+
+\begin{thebibliography}{00}
+
+\bibitem{filter}
+Chinna V. Gowdar and M.C. Parameshwara, “Lower-part approximate multi-bit adders for low-power DSP”, \emph{Lower-part approximate multi-bit adders for low-power DSP}, vol. 14, pp. 731-737 , Jan. 2022.
+
+\bibitem{filter1}
+Sarvenaz Tajasob, Morteza Rezaalipour, Masoud Dehyadegari, and Mahdi Nazm Bojnordi, “Designing Efficient Imprecise Adders using Multi-bit Approximate Building Blocks", \emph{Proceedings of the International Symposium on Low Power Electrnoics and Design }, Article No. 13, pp. 1-6, July 2018.
+
+\bibitem{wienerapp1}
+Vitro De M. Mandowski, Pedro T.L. Pereira, Paulo F. Butzen, Sergio Bampi, and Leomar S. Da R. Junior, “Approximate Adders for Efficient Circuits: Advantages and Limitations Compared to RCA”, \emph{in Proc. IEEE Symposium on Integrated Cirucits and Systems Design (SBCCI)}, pp. 1-5, Oct 2025.
+
+\bibitem{wienerapp2}
+Elham Esmaeili, Nabiollah Shiri, Mahmood Rafiee, and Ayoub Sadeghi, “A Multiplier-Free Discrete Cosine Transform Architecture Using Approximate Full Adder and Subtractor”, \emph{in Proc. IEEE Embedded Systems Letters}, vol. 13, pp. 441-444, May 2024.
+
+\bibitem{wienerapp3}
+Rounak Roy, Sudip Ghosh, and Hafizur Rahaman, “Implementation of Area Efficient Adders for Inexact Computing”, \emph{in Proc. International Symposium on Devices, Circuits and Systems (ISDCS)}, pp. 1-4, June 2023.
+
+% \bibitem{givens}
+% Marco Taboga, “Givens rotation matrix", \emph{Lectures on matrix algebra}, 2021. https://www.statlect.com/matrix-algebra/Givens-rotation.
+
+\bibitem{gsqr}
+Mehdi Hosseinpour, Nabiollah Shiri, and Farshad Pesaran, “High-Efficient Gate Diffusion Input-Based Approximate Full Adders with Low-Transistors Preservation for Multiplier-Based Digital Filters”, \emph{Arabian Journal for Science and Engineering)}, vol. 50, pp. 10641-10659, Nov. 2024.
+
+% \bibitem{cordic}
+% Shanmuga Kumar M, Mohamed Asan Basiri M, and Noor Mahammad Sk, “High Precision and High Speed Handheld Scientific Calculator Design Using Hardware Based CORDIC Algorithm”, \emph{Procedia Engineering, Elsevier}, vol. 64, pp. 56-64, 2013. 
+
+% \bibitem{filter2}
+% Mohamed Asan Basiri M, “Flexible Adaptive FIR Filter Designs Using LMS Algorithm”, \emph{Iin Proc. 23rd International Symposium on VLSI Design and Test (VDAT)}, pp. 61-71, July 2019.
+
+% \bibitem{filter3}
+% Mohamed Asan Basiri M and Noor Mahammad Sk, “Configurable Folded IIR Filter Design”, \emph{IEEE Transactions on Circuits and Systems - II, Express Brief}s, vol. 62, no. 12, pp. 1144-1148, D. 2015.
+
+% \bibitem{wiener1}
+% Anirban Chakraborty and Ayan Banerjee, “A Multiplierless VLSI Architecture of QR Decomposition Based 2D Wiener Filter for 1D/2D Signal Processing With High Accuracy”, \emph{in Proc. IEEE International Conference on Computing Communication and Automation (ICCCA)}, pp. 1-6, Dec. 2018.
+
+% \bibitem{wiener2}
+% Hong-Yuan Jheng, Yen-Hsiang Chen, Shanq-Jang Ruan, and Ziming Qi, “FPGA Implementation of High Sampling Rate In-car Non-stationary Noise Cancellation based on Adaptive Wiener filter”, \emph{in Proc. IEEE International Conference on VLSI and System-on-Chip}, pp. 114-117, Oct. 2011.
+
+% \bibitem{wiener3}
+% Madam Aravind Kumar and Kamsali Manjunatha Chari, “Noise Reduction Using Modified Wiener Filter in Digital Hearing Aid for Speech Signal Enhancement”, \emph{Journal of Intelligent Systems}, vol. 29, no. 1, pp. 1360-1378, 2020.
+
+% \bibitem{wiener4}
+% Walid W, Armanno G, Di Paola S, Ruo Roch M, Masera G, and Martina M, “VLSI Architectures of a Wiener Filter for Video Coding”, \emph{Electronics}, vol. 10, no. 16, pp. 1-12, Aug. 2021.
+
+% \bibitem{pr}
+% Mohamed Asan Basiri M and PVSR Bharadwaja, “Efficient FPGA Implementations of Lifting based DWT using Partial Reconfiguration”, \emph{IEEE 36th International Conference on VLSI Design and 2023 22nd International Conference on Embedded Systems}, pp. 319-324, Jan. 2023. 
+
+% \bibitem{dual_core}
+% Kesava Jaya Ram Ch and Mohamed Asan Basiri M, “FPGA based Secure Channel Design in Power Distribution Systems”, \emph{IEEE International Symposium on Multidisciplinary Studies and Innovative Technologies (ISMSIT)}, pp. 1-5, Oct. 2023. 
+
+% \bibitem{mac}
+% Mohamed Asan Basiri M, and Noor Mahammad Sk, “An Efficient Hardware Based Higher Radix Floating Point MAC Design”, \emph{ACM Transactions on Design Automation of Electronic Systems}, vol. 20, no. 1, pp. (15) 1-25, Nov. 2014.
+
+% \bibitem{digit_serial}
+% Milos D. Ercegovac and Thomas Lang, \emph{Digital Arithmetic}, Morgan Kaufmann Publishers, pp. 331-396, 2004.
+
+
+
+\end{thebibliography}
+
+
+\end{document}

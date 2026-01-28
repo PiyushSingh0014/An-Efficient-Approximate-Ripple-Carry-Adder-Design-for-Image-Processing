@@ -1,0 +1,279 @@
+
+
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}  
+\usepackage{multirow}
+\usepackage{amsmath}
+
+\usepackage[utf8]{inputenc}
+%\usepackage[landscape, margin=0.5in]{geometry} % Landscape mode for wide table
+\usepackage{makecell} % To handle line breaks in cells
+
+
+\begin{document}
+
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c| } 
+ \hline\hline
+ \textbf{State} & \textbf{$x$} & \textbf{$y$} & \textbf{$z\,(Cin)$} 
+ & \textbf{\shortstack{Carry-out\\(Conventional)}} 
+ & \textbf{\shortstack{Carry-out\\(Proposed)}} 
+ & \textbf{Sum} \\ 
+(KPG) & & &
+& ($=xy+yz+zx$)
+& ($=xy$)
+& ($=x \oplus y \oplus z$) \\
+
+ \hline
+ K & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+ K & 0 & 0 & 1 & 0 & 0 & 1 \\ \hline
+ P & 0 & 1 & 0 & $\text{Carry-in}$ & 0 & 1 \\ \hline
+ P & 0 & 1 & 1 & $\text{Carry-in}$ & 0 & 0 \\ \hline
+ P & 1 & 0 & 0 & $\text{Carry-in}$ & 0 & 1 \\ \hline
+ P & 1 & 0 & 1 & $\text{Carry-in}$ & 0 & 0 \\ \hline
+ G & 1 & 1 & 0 & 1 & 1 & 0 \\ \hline
+ G & 1 & 1 & 1 & 1 & 1 & 1 \\ 
+ \hline\hline
+\end{tabular}
+\end{center}
+\caption{Truth table of full adder in conventional and proposed approximation based implementations}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline\hline
+\textbf{12-bit RCA} 
+& $\mathbf{Sum[0]$ to $Sum[11]}$ 
+& $\mathbf{Cout_0$ to $Cout_3}$ 
+& $\mathbf{Cout_4}$ 
+& $\mathbf{Cout_5}$ 
+& $\mathbf{Cout_6}$ 
+& $\mathbf{Cout_7}$ 
+& $\mathbf{Cout_8$ to $Cout_{11}}$ \\
+\hline
+
+\shortstack{\textbf{Conventional}\\\textbf{(No Approximation)}} 
+& $x \oplus y \oplus z$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ \\ 
+\hline
+
+\shortstack{With 4-bit\\Approximation} 
+& $x \oplus y \oplus z$ 
+& $xy$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ \\ 
+\hline
+
+\shortstack{With 5-bit\\Approximation} 
+& $x \oplus y \oplus z$ 
+& $xy$ 
+& $xy$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ \\ 
+\hline
+
+\shortstack{With 6-bit\\Approximation} 
+& $x \oplus y \oplus z$ 
+& $xy$ 
+& $xy$ 
+& $xy$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ \\ 
+\hline
+
+\shortstack{With 7-bit\\Approximation} 
+& $x \oplus y \oplus z$ 
+& $xy$ 
+& $xy$ 
+& $xy$ 
+& $xy$ 
+& $xy+yz+zx$ 
+& $xy+yz+zx$ \\ 
+\hline
+
+\shortstack{With 8-bit\\Approximation} 
+& $x \oplus y \oplus z$ 
+& $xy$ 
+& $xy$ 
+& $xy$ 
+& $xy$ 
+& $xy$ 
+& $xy+yz+zx$ \\ 
+\hline\hline
+
+\end{tabular}%
+}
+
+\caption{The values of sum and carry outputs of the full adders used in the 12-bit conventional and proposed approximation based implementations}
+\end{table}
+
+
+\clearpage % Forces a new page so tables don't get crowded
+
+% --- TABLE 1: COMPARISON OF VARIOUS PARAMETERS ---
+\begin{table}[h!]
+\centering
+
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline\hline
+\textbf{Parameters}
+& \shortstack{\textbf{4-bit}\\\textbf{Approximation}}
+& \shortstack{\textbf{5-bit}\\\textbf{Approximation}}
+& \shortstack{\textbf{6-bit}\\\textbf{Approximation}}
+& \shortstack{\textbf{7-bit}\\\textbf{Approximation}}
+& \shortstack{\textbf{8-bit}\\\textbf{Approximation}} \\
+\hline
+
+\shortstack{\textbf{Mean Error Distance}\\\textbf{(MED)}}
+
+& 3.5 & 7.5 & 15.5 & 31.5 & 63.5 \\
+\hline
+
+\shortstack{\textbf{Normalized Mean Error Distance}\\\textbf{(NMED)}}
+
+& 0.00042798 & 0.000915639 & 0.001892323 & 0.003845684 & 0.007752411 \\
+\hline
+
+\shortstack{\textbf{Error Rate}\\\textbf{(Total = 16,777,216)}}
+
+& 6,029,312 & 7,602,176 & 8,945,664 & 10,092,544 & 11,071,488 \\
+\hline
+
+\shortstack{\textbf{Accuracy}\\\textbf{(\%)}}
+& 64.0625 & 54.6875 & 46.679 & 39.84375 & 34.0087 \\
+\hline\hline
+
+\end{tabular}%
+}
+
+\caption{Comparison of error and accuracy parameters for the proposed approximation-based 12-bit ripple carry adders}
+\end{table}
+
+
+% --- TABLE 2: PSNR COMPARISON (Complex columns) ---
+
+
+
+
+
+%\usepackage[utf8]{inputenc}
+% Set landscape and minimize margins to give maximum space
+% \usepackage[landscape, margin=0.25in]{geometry} 
+%\usepackage{array}
+%\usepackage{makecell} 
+%\usepackage{graphicx} % Required for \resizebox
+
+
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.3} % Adjust row height
+\setlength{\tabcolsep}{3pt} % Reduce padding between columns
+
+% \resizebox forces the table to fit within the text width
+\resizebox{\textwidth}{!}{
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+    \thead[l]{PSNR\\comparison} & 
+    \thead{Using\\the exact\\adder} & 
+    \multicolumn{2}{c|}{\thead{Using the 4-bit\\approximate\\adder}} & 
+    \multicolumn{2}{c|}{\thead{Using the 5-bit\\approximate\\adder}} & 
+    \multicolumn{2}{c|}{\thead{Using the 6-bit\\approximate\\adder}} & 
+    \multicolumn{2}{c|}{\thead{Using the 7-bit\\approximate\\adder}} & 
+    \multicolumn{2}{c|}{\thead{Using the 8-bit\\approximate\\adder}} \\
+    \hline
+
+    % Second Header Row
+     & 
+    \makecell{Original\\i/p image\\v/s \\o/p\\image \\ of the\\kernel\\using\\exact\\adder} & 
+    \makecell{Original\\i/p\\image\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{o/p\\image\\of\\kernel\\using exact\\adder\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{Original\\i/p\\image\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{o/p\\image\\of\\kernel\\using\\exact\\adder\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{Original\\i/p\\image\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{o/p\\image\\of\\kernel\\using\\exact\\adder\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{Original\\i/p\\image\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{o/p\\image\\of\\kernel\\using exact\\adder\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{Original\\i/p\\image\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} & 
+    \makecell{o/p\\image\\of\\kernel\\using\\exact\\adder\\v/s\\o/p\\image\\of the\\kernel\\using\\proposed\\approx\\adder} \\
+    \hline
+
+    % Data Rows
+    Box kernel & 
+    29.10 db & 
+    28.88 db & 35.41 db & 
+    27.16 db & 30.34 db & 
+    23.23 db & 24.25 db & 
+    17.32 db & 17.53 db & 
+    13.24 db & 13.33 db \\
+    \hline
+
+    Laplacian kernel & 
+    6.44 db & 
+    6.31 db & 13.42 db & 
+    6.46 db & 13.33 db & 
+    6.87 db & 12.89 db & 
+    6.98 db & 11.38 db & 
+    6.73 db & 10.00 db \\
+    \hline
+
+    Sobel kernel & 
+    6.52 db & 
+    6.58 db & 23.40 db & 
+    6.76 db & 21.43 db & 
+    7.06 db & 18.11 db & 
+    7.04 db & 13.67 db & 
+    7.07 db & 11.64 db \\
+    \hline
+
+    \end{tabular}
+}
+\caption{PSNR comparison for exact and approximate adders using different image processing kernels}
+\end{table}
+
+
+
+
+
+% --- TABLE 4: CADENCE SYNTHESIS RESULTS ---
+\begin{table}[h!]
+\centering
+% \resizebox ensures the table fits within the page margins
+\resizebox{\textwidth}{!}{%
+    \begin{tabular}{ |c|c|c|c|c|c|c|c| } 
+     \hline\hline
+     % FIXED: Using \thead allows line breaks (\\) and bold text safely
+     \thead{Design} & \thead{Cell Count} & \thead{Area \\ ($\mu m^2$)} & \thead{Leakage \\ (nW)} & \thead{Internal \\ ($nW$)} & \thead{Net \\ ($nW$)} & \thead{Switching \\ ($nW$)} & \thead{Delay \\ ($ps$)} \\ 
+     \hline
+     
+     \makecell{Without \\ Approximation} & 79 & 132.010 & 9.385 & 2894.658 & 868.248 & 3762.906 & 800  \\ \hline
+     \makecell{4-bit \\ Approximation} & 67 & 115.600 & 8.261 & 2345.973 & 712.149 & 3058.122 & 584  \\ \hline
+     \makecell{5-bit \\ Approximation} & 63 & 110.120 & 7.886 & 2161.933 & 659.807 & 2821.740 & 513  \\ \hline
+     \makecell{6-bit \\ Approximation} & 59 & 104.650 & 7.511 & 1977.148 & 607.259 & 2584.407 & 441  \\ \hline
+     \makecell{7-bit \\ Approximation} & 55 & 99.180 & 7.135 & 1792.098 & 554.625 & 2346.723 & 369  \\ \hline
+     \makecell{8-bit \\ Approximation} & 51 & 93.710 & 6.758 & 1608.861 & 502.440 & 2111.302 & 298  \\ 
+     \hline\hline
+    \end{tabular}%
+}
+\caption{Synthesis results of conventional and proposed approximation based 12-bit ripple carry adders using 45nm CMOS technology with Cadence}
+\end{table}
+\end{document}
