@@ -26,18 +26,12 @@ The design was synthesized using **Cadence Genus** with **45nm CMOS technology**
 | **`model/`** | Python scripts for **Error Analysis** (MED, NMED) and **Kernel Multiplication** modeling. |
 | **`visualization/`** | MATLAB scripts used to generate performance graphs and comparative plots. |
 | **`outputs/`** | Stores the generated results, including synthesized logs, processed images, and raw data. |
-| **`assets/`** | Diagrams of the architecture and logic gates used in this documentation. |
+| **`assets/`** | Documentation files and diagrams. |
 
 ---
 
 ## 🛠️ Architecture
 The Proposed Approximate Logic (PAL) simplifies the full adder circuit by making the Carry Output ($C_{out}$) independent of the Carry Input ($C_{in}$) for the lower bits. This breaks the carry chain and allows for parallel computation.
-
-### **Comparison: Existing vs. Proposed**
-| Existing Logic (EAL) | Proposed Logic (PAL) |
-| :---: | :---: |
-| ![EAL Diagram](assets/EAL_architecture.png) | ![PAL Diagram](assets/PAL_architecture.png) |
-*(Note: Ensure your images are named `EAL_architecture.png` and `PAL_architecture.png` inside the `assets` folder)*
 
 ---
 
@@ -48,12 +42,6 @@ The Proposed Approximate Logic (PAL) simplifies the full adder circuit by making
 | **Accuracy** | 90% vs EAL9 | High Precision |
 | **Technology Node** | 45nm CMOS | Industry Standard |
 | **Applications** | Sobel / Box Kernels | Real-world tested |
-
-### **Visual Validation**
-Below is the comparison of Edge Detection (Sobel Kernel) using the Exact Adder vs. the Proposed Approximate Adder (PAL).
-
-![Sobel Output](outputs/sobel_output_comparison.png)
-*(Place a comparison image of your Sobel output in the `outputs` folder)*
 
 ---
 
