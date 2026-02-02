@@ -52,4 +52,5 @@ Requirements: **Cadence Genus** or **Xilinx Vivado**.
 ```bash
 cd rtl/synthesis
 # Run the synthesis script
-genus -f script.tcl
+genus -legacy_ui
+source script.tcl
